@@ -1,5 +1,12 @@
+import { RouterProvider } from 'react-router-dom';
+import routes from './Routes/router';
+
 function App() {
-  return <>dargon news project setup</>;
+  return (
+    <>
+      <RouterProvider router={routes} />
+    </>
+  );
 }
 
 export default App;
