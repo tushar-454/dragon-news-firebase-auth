@@ -1,19 +1,29 @@
 /* eslint-disable no-useless-escape */
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import swal from 'sweetalert';
 import auth from '../../firebase/firebase.init';
 import Button from '../UI/Button';
+import Checkbox from '../UI/Checkbox';
 import Input from '../UI/Input';
 const registerInit = {
+  displayName: '',
+  photoUrl: '',
   email: '',
   password: '',
 };
-const errorInit = { email: '', password: '' };
+const errorInit = {
+  displayName: '',
+  photoUrl: '',
+  email: '',
+  password: '',
+  terms: false,
+};
 const Register = () => {
   const [register, setRegister] = useState({ ...registerInit });
   const [error, setError] = useState({ ...errorInit });
+  const [terms, setTerms] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,24 +31,84 @@ const Register = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = register;
-    if (
+    const { displayName, photoUrl, email, password } = register;
+    if (!displayName) {
+      setError(() => ({
+        displayName: 'Name must be required!',
+        photoUrl: '',
+        email: '',
+        password: '',
+        terms: false,
+      }));
+      return;
+    } else if (displayName.length < 4) {
+      setError(() => ({
+        displayName: 'Name must be at lest 4 charecters!',
+        photoUrl: '',
+        email: '',
+        password: '',
+        terms: false,
+      }));
+      return;
+    } else if (!photoUrl) {
+      setError(() => ({
+        displayName: '',
+        photoUrl: 'Photo Url must be required!',
+        email: '',
+        password: '',
+        terms: false,
+      }));
+      return;
+    } else if (
+      !/^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim.test(photoUrl)
+    ) {
+      setError(() => ({
+        displayName: '',
+        photoUrl: 'Invalid Photo Url !',
+        email: '',
+        password: '',
+        terms: false,
+      }));
+      return;
+    } else if (
       !/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
         email
       )
     ) {
-      setError(() => ({ email: 'Invalid Email', password: '' }));
+      setError(() => ({
+        displayName: '',
+        photoUrl: '',
+        email: 'Invalid Email !',
+        password: '',
+        terms: false,
+      }));
       return;
     } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       setError(() => ({
+        displayName: '',
+        photoUrl: '',
         email: '',
         password:
           'Password must be 8 Cherecters and mixed with uppercase,lowecase and number',
+        terms: false,
+      }));
+      return;
+    } else if (!terms) {
+      setError(() => ({
+        displayName: '',
+        photoUrl: '',
+        email: '',
+        password: '',
+        terms: true,
       }));
       return;
     }
     createUserWithEmailAndPassword(auth, email, password)
       .then((credential) => {
+        updateProfile(credential.user, {
+          displayName: displayName,
+          photoURL: photoUrl,
+        });
         console.log(credential.user);
         swal(
           'Account Registation Successfull!',
@@ -47,8 +117,12 @@ const Register = () => {
         );
         setRegister({ ...registerInit });
         setError({ ...errorInit });
+        setTerms(false);
       })
-      .catch((err) => setError(err.message));
+      .catch((error) => {
+        swal('There was an error occur!', error.message, 'error');
+        setError(error.message);
+      });
   };
   return (
     <div className='grid justify-center'>
@@ -57,10 +131,13 @@ const Register = () => {
         <form className='w-full' onSubmit={handleSubmit}>
           <Input
             displayName='Name'
-            id='name'
-            name='name'
+            id='displayName'
+            name='displayName'
             type='text'
             placeholder='Jone Dou'
+            value={register.displayName}
+            handleChange={handleChange}
+            error={error.displayName}
           />
           <Input
             displayName='Photo Url'
@@ -68,6 +145,9 @@ const Register = () => {
             name='photoUrl'
             type='url'
             placeholder='https://www.profileimage.com/myimage.jpg'
+            value={register.photoUrl}
+            handleChange={handleChange}
+            error={error.photoUrl}
           />
           <Input
             displayName='Email'
@@ -89,6 +169,13 @@ const Register = () => {
             value={register.password}
             handleChange={handleChange}
             error={error.password}
+          />
+          <Checkbox
+            name='terms'
+            displayName='Accept our Terms and Condition'
+            checked={terms}
+            error={error.terms}
+            handleChange={() => setTerms(!terms)}
           />
           <Button
             displayName='Register'
