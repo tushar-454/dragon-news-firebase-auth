@@ -5,12 +5,12 @@
     "path": "/"
   },
   {
-    "id": 1,
+    "id": 2,
     "name": "About",
     "path": "/about"
   },
   {
-    "id": 1,
+    "id": 3,
     "name": "Career",
     "path": "/career"
   }

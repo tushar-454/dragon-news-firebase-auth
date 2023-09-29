@@ -22,13 +22,7 @@ const Home = () => {
               className='text-lg text-[#706F6F]'
             >
               {({ isActive }) => (
-                <span
-                  className={
-                    isActive
-                      ? 'bg-[#403f3f9b] text-xl text-white font-semibold px-6 py-2'
-                      : ''
-                  }
-                >
+                <span className={isActive ? 'font-semibold' : ''}>
                   {menu.name}
                 </span>
               )}
