@@ -1,3 +1,4 @@
+import { BsFire } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
 import { NavLink, useLoaderData } from 'react-router-dom';
 import ButtonIcon from '../UI/ButtonIcon';
@@ -7,11 +8,10 @@ const Home = () => {
     <div className='container mx-auto px-4'>
       <div className='navHeader flex justify-between items-center'>
         <ButtonIcon
+          key='1'
           name='Tranding News'
           bg={'bg-red-500'}
-          icon={
-            <FaUserCircle className='text-4xl text-white absolute left-2' />
-          }
+          icon={<BsFire className='text-4xl text-white absolute left-2' />}
         />
         <div className='navWrap flex gap-8'>
           {menus.map((menu) => (
@@ -37,6 +37,7 @@ const Home = () => {
         </div>
         <div className='account'>
           <ButtonIcon
+            key='2'
             name='Login'
             bg={'bg-purple-700'}
             path={'/login'}

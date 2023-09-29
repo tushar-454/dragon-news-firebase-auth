@@ -5,7 +5,7 @@ import Input from '../UI/Input';
 const Login = () => {
   return (
     <div className='grid justify-center'>
-      <div className='loginWrap w-full md:w-[47rem] border border-[#d7d7d7] flex flex-col items-center p-16'>
+      <div className='loginWrap w-full md:w-[47rem] border border-[#d7d7d7] flex flex-col items-center p-16 shadow-lg'>
         <h1 className='text-4xl font-semibold mb-12'>Login your account</h1>
         <form className='w-full'>
           <Input

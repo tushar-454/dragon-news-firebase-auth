@@ -1,13 +1,60 @@
+/* eslint-disable no-useless-escape */
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import swal from 'sweetalert';
+import auth from '../../firebase/firebase.init';
 import Button from '../UI/Button';
 import Input from '../UI/Input';
-
+const registerInit = {
+  email: '',
+  password: '',
+};
+const errorInit = { email: '', password: '' };
 const Register = () => {
+  const [register, setRegister] = useState({ ...registerInit });
+  const [error, setError] = useState({ ...errorInit });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRegister((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { email, password } = register;
+    if (
+      !/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(
+        email
+      )
+    ) {
+      setError(() => ({ email: 'Invalid Email', password: '' }));
+      return;
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+      setError(() => ({
+        email: '',
+        password:
+          'Password must be 8 Cherecters and mixed with uppercase,lowecase and number',
+      }));
+      return;
+    }
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((credential) => {
+        console.log(credential.user);
+        swal(
+          'Account Registation Successfull!',
+          'Now go to login page.',
+          'success'
+        );
+        setRegister({ ...registerInit });
+        setError({ ...errorInit });
+      })
+      .catch((err) => setError(err.message));
+  };
   return (
     <div className='grid justify-center'>
-      <div className='loginWrap w-full md:w-[47rem] border border-[#d7d7d7] flex flex-col items-center p-16'>
+      <div className='registerWrap w-full md:w-[47rem] border border-[#d7d7d7] flex flex-col items-center p-16 mb-12 shadow-lg'>
         <h1 className='text-4xl font-semibold mb-12'>Register your account</h1>
-        <form className='w-full'>
+        <form className='w-full' onSubmit={handleSubmit}>
           <Input
             displayName='Name'
             id='name'
@@ -28,6 +75,9 @@ const Register = () => {
             name='email'
             type='email'
             placeholder='example@gmail.com'
+            value={register.email}
+            handleChange={handleChange}
+            error={error.email}
           />
           <Input
             displayName='Password'
@@ -36,8 +86,18 @@ const Register = () => {
             type='password'
             placeholder='T5gat[D%f4.&G4Q'
             toggle={true}
+            value={register.password}
+            handleChange={handleChange}
+            error={error.password}
           />
-          <Button displayName='Register' isBlock={true} bg='bg-green-500' />
+          <Button
+            displayName='Register'
+            isBlock={true}
+            bg='bg-purple-600'
+            color='text-white'
+            type='submit'
+            value='Register'
+          />
         </form>
         <div className='gotoRegister my-10'>
           <p className='font-semibold'>
