@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-escape */
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { sendEmailVerification, updateProfile } from 'firebase/auth';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
-import auth from '../../firebase/firebase.init';
+import { AuthContext } from '../Provider/AuthProvider';
 import Button from '../UI/Button';
 import Checkbox from '../UI/Checkbox';
 import Input from '../UI/Input';
@@ -24,6 +24,9 @@ const Register = () => {
   const [register, setRegister] = useState({ ...registerInit });
   const [error, setError] = useState({ ...errorInit });
   const [terms, setTerms] = useState(false);
+
+  const { registerUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,21 +106,28 @@ const Register = () => {
       }));
       return;
     }
-    createUserWithEmailAndPassword(auth, email, password)
+    registerUser(email, password)
       .then((credential) => {
         updateProfile(credential.user, {
           displayName: displayName,
           photoURL: photoUrl,
         });
-        console.log(credential.user);
         swal(
           'Account Registation Successfull!',
           'Now go to login page.',
           'success'
         );
+        sendEmailVerification(credential.user).then(() => {
+          swal(
+            'Email verification required !',
+            'Check your main & verify mail.',
+            'info'
+          );
+        });
         setRegister({ ...registerInit });
         setError({ ...errorInit });
         setTerms(false);
+        navigate('/login');
       })
       .catch((error) => {
         swal('There was an error occur!', error.message, 'error');

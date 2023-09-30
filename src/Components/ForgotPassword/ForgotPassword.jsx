@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import auth from '../../firebase/firebase.init';
 import Button from '../UI/Button';
@@ -10,6 +10,9 @@ import Input from '../UI/Input';
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+
   const handleReset = (e) => {
     e.preventDefault();
     if (
@@ -24,6 +27,7 @@ const ForgotPassword = () => {
       .then(() => {
         swal('Please check your mail.', 'Reset your password', 'info');
         setError('');
+        navigate('/login');
       })
       .catch((error) => {
         swal('Thare was an error', error.massage, 'error');

@@ -1,10 +1,10 @@
 /* eslint-disable no-useless-escape */
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
-import auth from '../../firebase/firebase.init';
+import { AuthContext } from '../Provider/AuthProvider';
 import Button from '../UI/Button';
+import Checkbox from '../UI/Checkbox';
 import Input from '../UI/Input';
 const loginInit = {
   email: '',
@@ -15,11 +15,14 @@ const Login = () => {
   const [login, setLogin] = useState({ ...loginInit });
   const [error, setError] = useState({ ...errorInit });
 
+  const { user, loginUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLogin((prev) => ({ ...prev, [name]: value }));
   };
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const { email, password } = login;
     if (!email) {
@@ -32,16 +35,18 @@ const Login = () => {
       }));
       return;
     }
-    signInWithEmailAndPassword(auth, email, password)
-      .then((credential) => {
-        console.log(credential.user);
+
+    // console.log(await user?.emailVerified);
+
+    loginUser(email, password)
+      .then(() => {
         swal('Login Successfull!', '', 'success');
         setLogin({ ...loginInit });
         setError({ ...errorInit });
+        navigate('/');
       })
       .catch((error) => {
         swal('There was an error occur!', error.message, 'error');
-        console.log(error.message);
       });
   };
   return (
@@ -70,11 +75,16 @@ const Login = () => {
             handleChange={handleChange}
             error={error.password}
           />
-          <Link to='/forgot-password' state='forgot-password'>
-            <p className='text-[#9F9F9F] mb-5 cursor-pointer underline underline-offset-4'>
-              Forgot Password?
-            </p>
-          </Link>
+          <div className='loginFeature flex items-center justify-between'>
+            <div>
+              <Checkbox displayName='Remember me' name='remember' />
+            </div>
+            <Link to='/forgot-password' state='forgot-password'>
+              <p className='text-[#9F9F9F] mb-5 cursor-pointer underline underline-offset-4'>
+                Forgot Password?
+              </p>
+            </Link>
+          </div>
           <Button displayName='Login' isBlock={true} bg='bg-green-500' />
         </form>
         <div className='gotoRegister my-10'>

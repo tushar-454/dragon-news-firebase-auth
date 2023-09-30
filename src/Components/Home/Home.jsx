@@ -1,9 +1,21 @@
+import { useContext, useState } from 'react';
 import { BsFire } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
-import { NavLink, useLoaderData } from 'react-router-dom';
+import { NavLink, Outlet, useLoaderData } from 'react-router-dom';
+import { AuthContext } from '../Provider/AuthProvider';
+import Button from '../UI/Button';
 import ButtonIcon from '../UI/ButtonIcon';
 const Home = () => {
+  const [isSignoutShow, setIsSignoutShow] = useState(false);
+  const { user, logOutUser } = useContext(AuthContext);
   const menus = useLoaderData();
+
+  const handleSignOut = () => {
+    logOutUser()
+      .then(() => console.log('logout successfully'))
+      .catch((error) => console.log(error.message));
+  };
+
   return (
     <div className='container mx-auto px-4'>
       <div className='navHeader flex justify-between items-center'>
@@ -30,17 +42,38 @@ const Home = () => {
           ))}
         </div>
         <div className='account'>
-          <ButtonIcon
-            key='2'
-            name='Login'
-            bg={'bg-purple-700'}
-            path={'/login'}
-            icon={
-              <FaUserCircle className='text-4xl text-white absolute left-2' />
-            }
-          />
+          {user ? (
+            <div className='flex gap-3 items-center relative'>
+              <p className='text-xl'>{user.displayName}</p>
+              <img
+                src={user.photoURL}
+                className='w-[50px] h-[50px] object-cover cursor-pointer rounded-full'
+                onClick={() => setIsSignoutShow(!isSignoutShow)}
+              />
+              {isSignoutShow && (
+                <div className='absolute top-16 right-0'>
+                  <Button
+                    displayName='Signout'
+                    type='button'
+                    handleClick={handleSignOut}
+                    bg={'bg-purple-700'}
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <ButtonIcon
+              name='Login'
+              bg={'bg-purple-700'}
+              path={'/login'}
+              icon={
+                <FaUserCircle className='text-4xl text-white absolute left-2' />
+              }
+            />
+          )}
         </div>
       </div>
+      <Outlet />
     </div>
   );
 };
