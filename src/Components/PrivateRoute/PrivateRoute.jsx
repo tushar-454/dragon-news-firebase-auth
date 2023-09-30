@@ -1,10 +1,19 @@
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import swal from 'sweetalert';
 import { AuthContext } from '../Provider/AuthProvider';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
+  if (!user) {
+    swal('Log in or register required !', '', 'info');
+    return <Navigate to='/register' replace={true} />;
+  }
+  if (!user?.emailVerified) {
+    swal('Email verification required!', '', 'info');
+    return <Navigate to='/' replace={true} />;
+  }
   if (loading) {
     return (
       <div className='grid justify-center'>

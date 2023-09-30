@@ -15,7 +15,7 @@ const Login = () => {
   const [login, setLogin] = useState({ ...loginInit });
   const [error, setError] = useState({ ...errorInit });
 
-  const { user, loginUser } = useContext(AuthContext);
+  const { loginUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -35,8 +35,6 @@ const Login = () => {
       }));
       return;
     }
-
-    // console.log(await user?.emailVerified);
 
     loginUser(email, password)
       .then(() => {
