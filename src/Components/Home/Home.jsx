@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { BsFire } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
 import { NavLink, Outlet, useLoaderData } from 'react-router-dom';
+import swal from 'sweetalert';
 import { AuthContext } from '../Provider/AuthProvider';
 import Button from '../UI/Button';
 import ButtonIcon from '../UI/ButtonIcon';
@@ -9,10 +10,12 @@ const Home = () => {
   const [isSignoutShow, setIsSignoutShow] = useState(false);
   const { user, logOutUser } = useContext(AuthContext);
   const menus = useLoaderData();
-
+  console.log(user, user?.reloadUserInfo?.providerUserInfo[0].screenName);
   const handleSignOut = () => {
     logOutUser()
-      .then(() => console.log('logout successfully'))
+      .then(() => {
+        swal('Logout Successfully !', '', 'success');
+      })
       .catch((error) => console.log(error.message));
   };
 
@@ -44,7 +47,11 @@ const Home = () => {
         <div className='account'>
           {user ? (
             <div className='flex gap-3 items-center relative'>
-              <p className='text-xl'>{user.displayName}</p>
+              <p className='text-xl'>
+                {user.displayName
+                  ? user.displayName
+                  : user.reloadUserInfo.providerUserInfo[0].screenName}
+              </p>
               <img
                 src={user.photoURL}
                 className='w-[50px] h-[50px] object-cover cursor-pointer rounded-full'

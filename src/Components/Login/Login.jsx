@@ -1,5 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { useContext, useState } from 'react';
+import { FaFacebook, FaGithub, FaSquareXTwitter } from 'react-icons/fa6';
+import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { AuthContext } from '../Provider/AuthProvider';
@@ -15,7 +17,8 @@ const Login = () => {
   const [login, setLogin] = useState({ ...loginInit });
   const [error, setError] = useState({ ...errorInit });
 
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser, loginWithGoogle, loginWithFacebook, loginWithGithub } =
+    useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -41,6 +44,36 @@ const Login = () => {
         swal('Login Successfull!', '', 'success');
         setLogin({ ...loginInit });
         setError({ ...errorInit });
+        navigate('/');
+      })
+      .catch((error) => {
+        swal('There was an error occur!', error.message, 'error');
+      });
+  };
+  const handleGoogleLogin = () => {
+    loginWithGoogle()
+      .then(() => {
+        swal('Login Successfull!', '', 'success');
+        navigate('/');
+      })
+      .catch((error) => {
+        swal('There was an error occur!', error.message, 'error');
+      });
+  };
+  const handleFacebookLogin = () => {
+    loginWithFacebook()
+      .then(() => {
+        swal('Login Successfull!', '', 'success');
+        navigate('/');
+      })
+      .catch((error) => {
+        swal('There was an error occur!', error.message, 'error');
+      });
+  };
+  const handleGithubLogin = () => {
+    loginWithGithub()
+      .then(() => {
+        swal('Login Successfull!', '', 'success');
         navigate('/');
       })
       .catch((error) => {
@@ -85,6 +118,34 @@ const Login = () => {
           </div>
           <Button displayName='Login' isBlock={true} bg='bg-green-500' />
         </form>
+        <div className='divided w-full relative mt-5 z-50'>
+          <p className='text-center font-semibold text-[#9F9F9F] bg-white'>
+            Or login with
+          </p>
+        </div>
+        <div className='loginWithBtn flex gap-6 justify-center mt-5'>
+          <button
+            onClick={handleGoogleLogin}
+            className='p-3 rounded-lg border border-sky-100 bg-gray-100'
+          >
+            <FcGoogle className='text-4xl' />
+          </button>
+          <button
+            onClick={handleFacebookLogin}
+            className='p-3 rounded-lg border border-sky-100 bg-gray-100'
+          >
+            <FaFacebook className='text-4xl text-[#0866FF]' />
+          </button>
+          <button className='p-3 rounded-lg border border-sky-100 bg-gray-100'>
+            <FaSquareXTwitter className='text-4xl' />
+          </button>
+          <button
+            onClick={handleGithubLogin}
+            className='p-3 rounded-lg border border-sky-100 bg-gray-100'
+          >
+            <FaGithub className='text-4xl' />
+          </button>
+        </div>
         <div className='gotoRegister my-10'>
           <p className='font-semibold'>
             Dont’t Have An Account ?{' '}

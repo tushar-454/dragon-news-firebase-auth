@@ -1,7 +1,11 @@
 import {
+  FacebookAuthProvider,
+  GithubAuthProvider,
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from 'firebase/auth';
 import PropTypes from 'prop-types';
@@ -29,7 +33,28 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  const authInfo = { user, loading, registerUser, loginUser, logOutUser };
+  const loginWithGoogle = () => {
+    return signInWithPopup(auth, new GoogleAuthProvider());
+  };
+
+  const loginWithFacebook = () => {
+    return signInWithPopup(auth, new FacebookAuthProvider());
+  };
+
+  const loginWithGithub = () => {
+    return signInWithPopup(auth, new GithubAuthProvider());
+  };
+
+  const authInfo = {
+    user,
+    loading,
+    registerUser,
+    loginUser,
+    logOutUser,
+    loginWithGoogle,
+    loginWithFacebook,
+    loginWithGithub,
+  };
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
