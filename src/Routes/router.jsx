@@ -3,6 +3,7 @@ import About from '../Components/About/About';
 import Career from '../Components/Career/Career';
 import ForgotPassword from '../Components/ForgotPassword/ForgotPassword';
 import Home from '../Components/Home/Home';
+import HomeNews from '../Components/HomeNews/HomeNews';
 import Login from '../Components/Login/Login';
 import PrivateRoute from '../Components/PrivateRoute/PrivateRoute';
 import Register from '../Components/Register/Register';
@@ -18,7 +19,16 @@ const routes = createBrowserRouter([
         element: <Home />,
         loader: () => fetch('/menu.json'),
         children: [
-          { index: true, element: <p>Please Login first for read news</p> },
+          {
+            path: '/',
+            element: <HomeNews />,
+            loader: () => fetch('/news.json'),
+          },
+          {
+            path: '/:category/:id',
+            element: <HomeNews />,
+            loader: () => fetch('/news.json'),
+          },
           {
             path: '/about',
             element: (

@@ -2,6 +2,7 @@ import {
   FacebookAuthProvider,
   GithubAuthProvider,
   GoogleAuthProvider,
+  TwitterAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -45,6 +46,10 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, new GithubAuthProvider());
   };
 
+  const loginWithTwitter = () => {
+    return signInWithPopup(auth, new TwitterAuthProvider());
+  };
+
   const authInfo = {
     user,
     loading,
@@ -54,6 +59,7 @@ const AuthProvider = ({ children }) => {
     loginWithGoogle,
     loginWithFacebook,
     loginWithGithub,
+    loginWithTwitter,
   };
 
   useEffect(() => {

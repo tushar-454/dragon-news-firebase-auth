@@ -6,14 +6,6 @@ import { AuthContext } from '../Provider/AuthProvider';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
-  if (!user) {
-    swal('Log in or register required !', '', 'info');
-    return <Navigate to='/register' replace={true} />;
-  }
-  if (!user?.emailVerified) {
-    swal('Email verification required!', '', 'info');
-    return <Navigate to='/' replace={true} />;
-  }
   if (loading) {
     return (
       <div className='grid justify-center'>
@@ -47,6 +39,15 @@ const PrivateRoute = ({ children }) => {
       </div>
     );
   }
+  if (!user) {
+    swal('Log in or register required !', '', 'info');
+    return <Navigate to='/register' replace={true} />;
+  }
+  if (!user?.emailVerified) {
+    swal('Email verification required!', '', 'info');
+    return <Navigate to='/' replace={true} />;
+  }
+
   if (user) {
     return children;
   }

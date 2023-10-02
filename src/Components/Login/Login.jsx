@@ -17,8 +17,13 @@ const Login = () => {
   const [login, setLogin] = useState({ ...loginInit });
   const [error, setError] = useState({ ...errorInit });
 
-  const { loginUser, loginWithGoogle, loginWithFacebook, loginWithGithub } =
-    useContext(AuthContext);
+  const {
+    loginUser,
+    loginWithGoogle,
+    loginWithFacebook,
+    loginWithGithub,
+    loginWithTwitter,
+  } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -62,7 +67,8 @@ const Login = () => {
   };
   const handleFacebookLogin = () => {
     loginWithFacebook()
-      .then(() => {
+      .then((re) => {
+        console.log(re);
         swal('Login Successfull!', '', 'success');
         navigate('/');
       })
@@ -72,6 +78,16 @@ const Login = () => {
   };
   const handleGithubLogin = () => {
     loginWithGithub()
+      .then(() => {
+        swal('Login Successfull!', '', 'success');
+        navigate('/');
+      })
+      .catch((error) => {
+        swal('There was an error occur!', error.message, 'error');
+      });
+  };
+  const handleTwitterLogin = () => {
+    loginWithTwitter()
       .then(() => {
         swal('Login Successfull!', '', 'success');
         navigate('/');
@@ -136,7 +152,10 @@ const Login = () => {
           >
             <FaFacebook className='text-4xl text-[#0866FF]' />
           </button>
-          <button className='p-3 rounded-lg border border-sky-100 bg-gray-100'>
+          <button
+            onClick={handleTwitterLogin}
+            className='p-3 rounded-lg border border-sky-100 bg-gray-100'
+          >
             <FaSquareXTwitter className='text-4xl' />
           </button>
           <button

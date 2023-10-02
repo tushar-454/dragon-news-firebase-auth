@@ -1,3 +1,4 @@
+import moment from 'moment/moment';
 import { Link, Outlet } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
@@ -19,7 +20,7 @@ const Layout = () => {
             </div>
             <div className='time'>
               <p className='text-xl font-medium text-[#403F3F]'>
-                Sunday, November 27, 2022
+                {moment().format('dddd, MMMM D, YYYY')}
               </p>
             </div>
           </div>
