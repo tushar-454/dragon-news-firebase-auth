@@ -2,7 +2,13 @@ import { useContext, useEffect, useState } from 'react';
 import { BsFacebook, BsFire, BsInstagram, BsTwitter } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { Link, NavLink, Outlet, useLoaderData } from 'react-router-dom';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+} from 'react-router-dom';
 import swal from 'sweetalert';
 import { AuthContext } from '../Provider/AuthProvider';
 import Button from '../UI/Button';
@@ -13,6 +19,7 @@ const Home = () => {
   const { user, logOutUser, loginWithGoogle, loginWithFacebook } =
     useContext(AuthContext);
   const menus = useLoaderData();
+  const navigate = useNavigate();
   const handleSignOut = () => {
     logOutUser()
       .then(() => {
@@ -24,7 +31,7 @@ const Home = () => {
     loginWithGoogle()
       .then(() => {
         swal('Login Successfull!', '', 'success');
-        // navigate('/');
+        navigate('/');
       })
       .catch((error) => {
         swal('There was an error occur!', error.message, 'error');
@@ -35,7 +42,7 @@ const Home = () => {
       .then((re) => {
         console.log(re);
         swal('Login Successfull!', '', 'success');
-        // navigate('/');
+        navigate('/');
       })
       .catch((error) => {
         swal('There was an error occur!', error.message, 'error');
